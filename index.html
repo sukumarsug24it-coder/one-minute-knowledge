@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Minute Knowledge - Learn Daily</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-brain icon-gradient"></i>
+                <h2>One Minute<span>Knowledge</span></h2>
+                <span class="tagline">Learn daily</span>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="active" data-section="daily">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Daily Knowledge</span>
+                </li>
+                <li data-section="daily_facts">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Daily Facts</span>
+                </li>
+                <li data-section="life_skills">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Life Skills</span>
+                </li>
+                <li data-section="career_tips">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Career Tips</span>
+                </li>
+                <li data-section="money_tips">
+                    <i class="fas fa-coins"></i>
+                    <span>Money Tips</span>
+                </li>
+                <li data-section="health_awareness">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Health Awareness</span>
+                </li>
+                <li data-section="technology_updates">
+                    <i class="fas fa-microchip"></i>
+                    <span>Technology Updates</span>
+                </li>
+                <li data-section="books_reading">
+                    <i class="fas fa-book-open"></i>
+                    <span>Books Reading</span>
+                </li>
+                <li data-section="book_quotes">
+                    <i class="fas fa-quote-right"></i>
+                    <span>Book Quotes</span>
+                </li>
+                <li data-section="reading_challenges">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Reading Challenges</span>
+                </li>
+            </ul>
+
+            
+            <div class="sidebar-footer">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search knowledge...">
+                    <span class="shortcut-hint">⌘K</span>
+                </div>
+                
+                <!-- User Section -->
+                <div class="user-section" id="userSection">
+                    <!-- Logged out state -->
+                    <div id="loggedOutState">
+                        <button class="btn-login" onclick="showLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <button class="btn-register" onclick="showRegisterModal()">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </div>
+                    
+                    <!-- Logged in state -->
+                    <div id="loggedInState" style="display: none;">
+                        <div class="user-info" onclick="toggleProfile()">
+                            <img id="sidebarAvatar" src="" alt="Avatar" class="sidebar-avatar">
+                            <span id="sidebarUsername">User</span>
+                        </div>
+                        <button class="btn-logout" onclick="logoutUser()">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="preferences-toggle" onclick="togglePreferences()">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Preferences</span>
+                </div>
+                <div class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                    <span id="themeText">Dark Mode</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="sectionTitle">📚 Daily Knowledge</h1>
+                <div class="header-actions">
+                    <button class="btn-refresh" onclick="refreshKnowledge()">
+                        <i class="fas fa-sync-alt"></i> New Knowledge
+                    </button>
+                    <button class="btn-history" onclick="showHistory()">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                </div>
+            </header>
+
+            <div id="knowledgeDisplay" class="knowledge-grid">
+                <!-- Knowledge cards will be inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="auth-content">
+                <form id="loginForm" onsubmit="loginUser(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="loginUsername" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-auth">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <p class="auth-switch">
+                        Don't have an account? <span onclick="switchToRegister()">Register here</span>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="auth-content">
+                <form id="registerForm" onsubmit="registerUser(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="registerUsername" placeholder="Choose username" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create password" required>
+                    </div>
+                    <button type="submit" class="btn-auth">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                    <p class="auth-switch">
+                        Already have an account? <span onclick="switchToLogin()">Login here</span>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2>👤 My Profile</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="profile-content">
+                <div class="profile-avatar">
+                    <div class="avatar-upload">
+                        <img id="profileImage" src="" alt="Profile Photo">
+                        <label for="photoUpload" class="upload-btn">
+                            <i class="fas fa-camera"></i> Change Photo
+                        </label>
+                        <input type="file" id="photoUpload" accept="image/*" onchange="uploadPhoto(event)">
+                    </div>
+                </div>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="profileName" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="profilePhone" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="profileEmail" placeholder="Enter your email address">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                        <input type="text" id="profileAddress" placeholder="Enter your address">
+                    </div>
+                    <button class="btn-save-profile" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Save Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferences Modal -->
+    <div id="preferencesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Your Preferences</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="preferences-content">
+                <p>Select which topics you want to see in your daily digest:</p>
+                <div class="preference-options">
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="daily_facts">
+                        <span>Daily Facts</span>
+                    </label>
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="life_skills">
+                        <span>Life Skills</span>
+                    </label>
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="career_tips">
+                        <span>Career Tips</span>
+                    </label>
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="money_tips">
+                        <span>Money Tips</span>
+                    </label>
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="health_awareness">
+                        <span>Health Awareness</span>
+                    </label>
+                    <label class="preference-item">
+                        <input type="checkbox" checked data-category="technology_updates">
+                        <span>Technology Updates</span>
+                    </label>
+                </div>
+                <div class="preference-extra">
+                    <div class="preference-option">
+                        <label>
+                            <input type="checkbox" id="autoRotate" checked>
+                            Auto-rotate knowledge
+                        </label>
+                        <select id="rotationInterval" class="interval-select">
+                            <option value="30">Every 30 seconds</option>
+                            <option value="60" selected>Every 60 seconds</option>
+                            <option value="120">Every 2 minutes</option>
+                            <option value="300">Every 5 minutes</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-save-preferences" onclick="savePreferences()">Save Preferences</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📚 Knowledge History</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="historyContent" class="history-list"></div>
+        </div>
+    </div>
+
+    <script src="/main.js"></script>
+</body>
+</html>
