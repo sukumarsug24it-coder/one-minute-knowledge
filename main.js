@@ -68,19 +68,31 @@ function showToast(message, type = 'success') {
         toastWrap = document.createElement('div');
         toastWrap.id = 'toastWrap';
         toastWrap.style.position = 'fixed';
-        toastWrap.style.right = '18px';
-        toastWrap.style.bottom = '18px';
         toastWrap.style.zIndex = '2000';
         toastWrap.style.display = 'grid';
         toastWrap.style.gap = '10px';
+        
+        // Mobile-aware positioning
+        if (window.innerWidth <= 480) {
+            toastWrap.style.right = '10px';
+            toastWrap.style.bottom = 'calc(60px + 10px)'; // Above mobile nav if present
+            toastWrap.style.left = '10px';
+        } else {
+            toastWrap.style.right = '18px';
+            toastWrap.style.bottom = '18px';
+        }
+        
         document.body.appendChild(toastWrap);
     }
 
     const toast = document.createElement('div');
     toast.textContent = message;
-    toast.style.minWidth = '260px';
-    toast.style.maxWidth = '420px';
-    toast.style.padding = '12px 14px';
+    
+    const isMobile = window.innerWidth <= 480;
+    
+    toast.style.minWidth = isMobile ? '0' : '260px';
+    toast.style.maxWidth = isMobile ? '100%' : '420px';
+    toast.style.padding = isMobile ? '10px 12px' : '12px 14px';
     toast.style.borderRadius = '10px';
     toast.style.border = '1px solid rgba(148,163,184,0.22)';
     toast.style.background = 'rgba(17,24,39,0.92)';
@@ -88,6 +100,8 @@ function showToast(message, type = 'success') {
     toast.style.boxShadow = '0 22px 60px rgba(2,6,23,0.38)';
     toast.style.fontWeight = '700';
     toast.style.backdropFilter = 'blur(10px)';
+    toast.style.fontSize = isMobile ? '0.9rem' : '1rem';
+    toast.style.animation = 'slideIn 200ms ease-out';
 
     if (type === 'error') {
         toast.style.borderColor = 'rgba(239,68,68,0.45)';
@@ -898,5 +912,60 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSection('daily');
 });
 
-console.log('🌟 One Minute Knowledge loaded with backend-connected UI!');
+// ============ MOBILE MENU FUNCTIONS ============
+
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+    }
+    if (overlay) {
+        overlay.classList.toggle('show');
+    }
+}
+
+function closeMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (sidebar) {
+        sidebar.classList.remove('mobile-open');
+    }
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+}
+
+// Close mobile menu when a nav item is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-links li');
+    navLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+    
+    // Handle window resize to close mobile menu on desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+    
+    // Prevent body scroll when mobile menu is open
+    const sidebar = document.getElementById('sidebar');
+    const observer = new MutationObserver(function() {
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+    
+    if (sidebar) {
+        observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    }
+});
+
+console.log('🌟 One Minute Knowledge loaded with backend-connected UI and mobile support!');
 
